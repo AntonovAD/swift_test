@@ -36,12 +36,7 @@ if availableExercise.contains(exercise) {
     exit(0)
 }
 
-func exercise1() -> Void {
-    let N: Int = inputInt(placeholder: "N") //23
-    let M: Int = inputInt(placeholder: "M") //52
-    let X: Int = inputInt(placeholder: "X") //8
-    let Y: Int = inputInt(placeholder: "Y") //43
-
+func exercise1(_ N: Int, _ M: Int, _ X: Int, _ Y: Int) -> Void {
     let longerSide: Int = N>M ? N : M
     let shorterSide: Int = N>M ? M : N
     let diffToLongerSide: Int = shorterSide-X
@@ -52,14 +47,10 @@ func exercise1() -> Void {
     let needToAlive: Int = leftToShorterSide<leftToLongerSide ? leftToShorterSide : leftToLongerSide
 
     print("Ответ:")
-    print(needToAlive) //8
+    print(needToAlive)
 }
 
-func exercise2() -> Void {
-    let S: Int = inputInt(placeholder: "S") //109
-    let V: Int = inputInt(placeholder: "V") //60
-    let T: Int = inputInt(placeholder: "T") //2
-
+func exercise2(_ S: Int, _ V: Int, _ T: Int) -> Void {
     let dirForward: Bool = V>0
 
     let completeLength: Int = V*T
@@ -69,20 +60,12 @@ func exercise2() -> Void {
     let marker: Int = completeLength-lapLength
 
     print("Ответ:")
-    print(marker) //120
+    print(marker)
 }
 
-func exercise3() -> Void {
-    let N: Int = inputInt(placeholder: "N") //8
-    var array: [Int] = [Int]() //[4, 3, 5, 2, 5, 1, 3, 5]
-    print("Введите по очереди значения для array:")
-    Array(1...N).forEach { item in
-        let input: Int = inputInt(silence: true)
-        array.append(input)
-    }
-
+func exercise3(_ N: Int, _ array: [Int]) -> Void {
     let resultDict: [Int:(index: Int, count: Int)] = array.enumerated().reduce(into: [:]) { result, item in
-        if (Mirror(reflecting: result[item.element]).children.count>0) {
+        if (Mirror(reflecting: result[item.element]!).children.count>0) {
             result[item.element]?.count += 1
         } else {
             result[item.element] = (
@@ -92,7 +75,7 @@ func exercise3() -> Void {
         }
     }
 
-    var uniqItems: [Int: Int] = resultDict.enumerated().reduce(into: [:]) { result, item in
+    let uniqItems: [Int: Int] = resultDict.enumerated().reduce(into: [:]) { result, item in
         if (item.element.value.count == 1) {
             result[item.element.value.index] = item.element.key
         }
@@ -109,12 +92,10 @@ func exercise3() -> Void {
     //print(uniqItemsSorted)
 
     print("Ответ:")
-    print(uniqItemsSorted.map {$0.value}) //[4, 2, 1]
+    print(uniqItemsSorted.map {$0.value})
 }
 
-func exercise4() -> Void {
-    let randomString: String = inputString(placeholder: "ip") //"127.0.0.1"
-
+func exercise4(_ randomString: String) -> Void {
     var validationResult: Bool = true
 
     let splittedString: [String] = randomString.split(separator: ".").map(String.init)
@@ -141,23 +122,7 @@ func exercise4() -> Void {
     print(validationResult ? "YES" : "NO")
 }
 
-func exercise5() -> Void {
-    let N: Int = inputInt(placeholder: "N") //3
-    var arrayN: [Int] = [Int]() //[1,3,2]
-    print("Введите по очереди значения для arrayN:")
-    Array(1...N).forEach { item in
-        let input: Int = inputInt(silence: true)
-        arrayN.append(input)
-    }
-
-    let M: Int = inputInt(placeholder: "M") //3
-    var arrayM: [Int] = [Int]() //[4,3,2]
-    print("Введите по очереди значения для arrayM:")
-    Array(1...M).forEach { item in
-        let input: Int = inputInt(silence: true)
-        arrayM.append(input)
-    }
-
+func exercise5(_ N: Int, _ arrayN: [Int], _ M: Int, _ arrayM: [Int]) -> Void {
     let resultArrDict: [Bool] = arrayN.map { item in arrayM.contains(item) }
 
     let resultArr: [Int] = arrayN.enumerated().reduce(into: []) { result, item in
@@ -173,19 +138,95 @@ func exercise5() -> Void {
 func executeExercise(number: Int) -> Void {
     switch number {
     case 1:
-        exercise1()
+        let N: Int, M: Int, X: Int, Y: Int
+        if CommandLine.arguments.count == 1 {
+            N = inputInt(placeholder: "N") //23
+            M = inputInt(placeholder: "M") //52
+            X = inputInt(placeholder: "X") //8
+            Y = inputInt(placeholder: "Y") //43
+        } else {
+            N = Int(CommandLine.arguments[2])!
+            M = Int(CommandLine.arguments[3])!
+            X = Int(CommandLine.arguments[4])!
+            Y = Int(CommandLine.arguments[5])!
+        }
+        exercise1(N, M, X, Y) //8
         break
     case 2:
-        exercise2()
+        let S: Int, V: Int, T: Int
+        if CommandLine.arguments.count == 1 {
+            S = inputInt(placeholder: "S") //109
+            V = inputInt(placeholder: "V") //60
+            T = inputInt(placeholder: "T") //2
+        } else {
+            S = Int(CommandLine.arguments[2])!
+            V = Int(CommandLine.arguments[3])!
+            T = Int(CommandLine.arguments[4])!
+        }
+        exercise2(S, V, T) //120
         break
     case 3:
-        exercise3()
+        let N: Int
+        var array: [Int] = [Int]()
+        if CommandLine.arguments.count == 1 {
+            N = inputInt(placeholder: "N") //8
+            array = [Int]() //[4, 3, 5, 2, 5, 1, 3, 5]
+            print("Введите по очереди значения для array:")
+            Array(1...N).forEach { item in
+                let input: Int = inputInt(silence: true)
+                array.append(input)
+            }
+        } else {
+            N = Int(CommandLine.arguments[2])!
+            Array(3...N+2).forEach { item in
+                let arg: Int = Int(CommandLine.arguments[item])!
+                array.append(arg)
+            }
+        }
+        exercise3(N, array) //[4, 2, 1]
         break
     case 4:
-        exercise4()
+        let randomString: String
+        if CommandLine.arguments.count == 1 {
+            randomString = inputString(placeholder: "ip") //"127.0.0.1"
+        } else {
+            randomString = CommandLine.arguments[2]
+        }
+        exercise4(randomString)
         break
     case 5:
-        exercise5()
+        let N: Int, M: Int
+        var arrayN: [Int] = [Int](), arrayM: [Int] = [Int]()
+        if CommandLine.arguments.count == 1 {
+            N = inputInt(placeholder: "N") //3
+            arrayN = [Int]() //[1,3,2]
+            print("Введите по очереди значения для arrayN:")
+            Array(1...N).forEach { item in
+                let input: Int = inputInt(silence: true)
+                arrayN.append(input)
+            }
+
+            M = inputInt(placeholder: "M") //3
+            arrayM = [Int]() //[4,3,2]
+            print("Введите по очереди значения для arrayM:")
+            Array(1...M).forEach { item in
+                let input: Int = inputInt(silence: true)
+                arrayM.append(input)
+            }
+        } else {
+            N = Int(CommandLine.arguments[2])!
+            Array(3...N+2).forEach { item in
+                let arg: Int = Int(CommandLine.arguments[item])!
+                arrayN.append(arg)
+            }
+
+            M = Int(CommandLine.arguments[N+3])!
+            Array(N+4...M+6).forEach { item in
+                let arg: Int = Int(CommandLine.arguments[item])!
+                arrayM.append(arg)
+            }
+        }
+        exercise5(N, arrayN, M, arrayM) //[3, 2]
         break
     default:
         print("Такого задания не существует")
